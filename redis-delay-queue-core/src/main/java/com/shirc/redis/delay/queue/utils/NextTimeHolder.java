@@ -17,7 +17,6 @@ public class NextTimeHolder {
 
     public static AtomicLong nextTime = new AtomicLong(0);
 
-
     /**
      * 此方法为线程安全
      * 尝试将nextTime修改为newTime;
@@ -26,12 +25,13 @@ public class NextTimeHolder {
      * 否则还是修改为nextTime;
      * 如果修改之后的值是newTime ;则需要通知一下LockUtil.lock 醒过来;
      * 如果仍旧是nextTime说明要么当前的执行时间很后面或者说被另外一个线程修改为了更小的值
-     * @param newTime  新的执行时间
+     *
+     * @param newTime 新的执行时间
      */
-    public static void tryUpdate(long newTime){
-        LongUnaryOperator updateFunction = (a)->{
-            if(newTime<nextTime.get()){
-                logger.warn("==================尝试更新为newTime:{}==================",newTime);
+    public static void tryUpdate(long newTime) {
+        LongUnaryOperator updateFunction = (a) -> {
+            if (newTime < nextTime.get()) {
+                logger.warn("==================尝试更新为newTime:{}==================", newTime);
                 return newTime;
             }
             return nextTime.get();
@@ -39,24 +39,21 @@ public class NextTimeHolder {
         long next = nextTime.updateAndGet(updateFunction);
 
         //如果最终更新的不是  newTime说明已经被其他线程更新为更小的数了;
-        if(next == newTime){
-            synchronized (LockUtil.lock){
+        if (next == newTime) {
+            synchronized (LockUtil.lock) {
                 //更新了通知值更新了
                 LockUtil.lock.notifyAll();
             }
         }
-
     }
-
 
     /**
      * 将nextTime设置为0之后  并且通知  就会立马执行一次搬运操作
      */
-    public static void setZeroAndNotify(){
-        synchronized (LockUtil.lock){
+    public static void setZeroAndNotify() {
+        synchronized (LockUtil.lock) {
             NextTimeHolder.nextTime.set(0);
             LockUtil.lock.notifyAll();
         }
-
     }
 }

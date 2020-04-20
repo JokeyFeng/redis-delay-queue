@@ -19,27 +19,24 @@ import java.util.Date;
  **/
 @Service
 public class DelayQueueDemo2 extends AbstractTopicRegister<Args> {
+
     private static final Logger logger = LoggerFactory.getLogger(DelayQueueDemo2.class);
 
-
     @Autowired
-    RedisDelayQueue redisDelayQueue;
-
+    private RedisDelayQueue redisDelayQueue;
 
     @Override
     public String getTopic() {
-        return TopicEnums.DEMO_TOPIC_2.getTopic();
+        return TopicEnums.TOPIC_2.getTopic();
     }
-
 
     @Override
     public void execute(Args args) {
         //故意抛出一个异常
-       /* if(1/0==0){
-
-        }*/
-
-        logger.info("执行了Demo2的延时任务..{}",args);
+        if (args.getRetryCount() / 2 == 1) {
+            throw new RuntimeException("抛异常......");
+        }
+        logger.info("执行了[{}]的延时任务..{}", TopicEnums.TOPIC_2.getTopic(), args);
     }
 
     @Override
@@ -51,20 +48,22 @@ public class DelayQueueDemo2 extends AbstractTopicRegister<Args> {
 
     /**
      * 异步新增一个Demo2的延时任务
+     *
      * @param userId
      * @param delayTimes
      */
-    public void addDemo2DelayQueue(String userId,long delayTimes){
+    public void addDemo2DelayQueue(String userId, long delayTimes) {
         // do other something
-        redisDelayQueue.addAsync(new Args(userId),getTopic(),delayTimes);
+        redisDelayQueue.addAsync(new Args(userId), getTopic(), delayTimes);
     }
 
     /**
      * 异步删除一个延时任务
+     *
      * @param userId
      */
-    public void delDemo2Queue(String userId){
+    public void delDemo2Queue(String userId) {
         // do other something
-        redisDelayQueue.deleteAsync(getTopic(),userId);
+        redisDelayQueue.deleteAsync(getTopic(), userId);
     }
 }

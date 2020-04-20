@@ -13,19 +13,14 @@ public class RedisQueueKeys {
      */
     public static final String  REDIS_DELAY_TABLE = "Redis_Delay_Table";
 
-
     /**
      * 延迟队列的有序集合; 存放K=TOPIC:ID 和需要的执行时间戳;
      * 根据时间戳排序;
      */
     public static final String  RD_ZSET_BUCKET_PRE = "RD_ZSET_BUCKET:";
 
-
     /**
      * list结构; 每个Topic一个list；list存放的都是当前需要被消费的Job;
      */
     public static final String  RD_LIST_TOPIC_PRE = "RD_LIST_TOPIC:";
-
-
-
 }

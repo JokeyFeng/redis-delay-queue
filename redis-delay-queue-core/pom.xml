@@ -4,14 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>redis-delay-queue-core</artifactId>
     <groupId>com.shirc</groupId>
     <version>0.0.1-SNAPSHOT</version>
 
-
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -23,10 +20,7 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
-
     </dependencies>
-
-
 
     <build>
         <plugins>
@@ -39,7 +33,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1</version>

@@ -19,10 +19,9 @@ import java.util.concurrent.ExecutorService;
  * @Author shirenchuang
  * @Date 2019/7/30 5:33 PM
  **/
-public  class RedisDelayQueueImpl implements RedisDelayQueue {
+public class RedisDelayQueueImpl implements RedisDelayQueue {
+
     private static final Logger logger = LoggerFactory.getLogger(RedisDelayQueueContext.class);
-
-
 
     private RedisOperation redisOperation;
     private ConcurrentHashMap<String, AbstractTopicRegister> topicRegisterHolder;
@@ -36,86 +35,87 @@ public  class RedisDelayQueueImpl implements RedisDelayQueue {
     }
 
     @Override
-    public void addAsync(Args args, String topic, long delayTimeMillis){
-        add(args,delayTimeMillis,topic,RunTypeEnum.ASYNC);
+    public void addAsync(Args args, String topic, long delayTimeMillis) {
+        add(args, delayTimeMillis, topic, RunTypeEnum.ASYNC);
     }
 
 
     @Override
-    public void add(Args args,String topic,long runTimeMillis,RunTypeEnum runTypeEnum) {
-        if(runTypeEnum == RunTypeEnum.ASYNC){
-            executor.execute(()->addJob(args, topic, runTimeMillis));
-        }else {
+    public void add(Args args, String topic, long runTimeMillis, RunTypeEnum runTypeEnum) {
+        if (runTypeEnum == RunTypeEnum.ASYNC) {
+            executor.execute(() -> addJob(args, topic, runTimeMillis));
+        } else {
             addJob(args, topic, runTimeMillis);
         }
     }
 
     @Override
-    public void add(Args args, long delayTimeMillis, String topic, RunTypeEnum runTypeEnum){
-        if(runTypeEnum == RunTypeEnum.ASYNC){
-            executor.execute(()->addJob(args, delayTimeMillis, topic));
-        }else {
+    public void add(Args args, long delayTimeMillis, String topic, RunTypeEnum runTypeEnum) {
+        if (runTypeEnum == RunTypeEnum.ASYNC) {
+            executor.execute(() -> addJob(args, delayTimeMillis, topic));
+        } else {
             addJob(args, delayTimeMillis, topic);
         }
     }
 
     private void addJob(Args args, long delayTimeMillis, String topic) {
-        preCheck(args,topic,null,delayTimeMillis);
-        long runTimeMillis = System.currentTimeMillis()+delayTimeMillis;
-        redisOperation.addJob(topic,args,runTimeMillis);
+        preCheck(args, topic, null, delayTimeMillis);
+        long runTimeMillis = System.currentTimeMillis() + delayTimeMillis;
+        redisOperation.addJob(topic, args, runTimeMillis);
         //尝试更新下次的执行时间
         NextTimeHolder.tryUpdate(runTimeMillis);
     }
+
     private void addJob(Args args, String topic, long runTimeMillis) {
-        preCheck(args,topic,runTimeMillis,null);
-        redisOperation.addJob(topic,args,runTimeMillis);
+        preCheck(args, topic, runTimeMillis, null);
+        redisOperation.addJob(topic, args, runTimeMillis);
         //尝试更新下次的执行时间
         NextTimeHolder.tryUpdate(runTimeMillis);
     }
-    private void preCheck(Args args,String topic,Long runTimeMillis,Long delayTimeMillis) {
-        if(checkStringEmpty(topic)||
-                checkStringEmpty(args.getId())){
+
+    private void preCheck(Args args, String topic, Long runTimeMillis, Long delayTimeMillis) {
+        if (checkStringEmpty(topic) ||
+                checkStringEmpty(args.getId())) {
             throw new DelayQueueException("未设置Topic或者Id!");
         }
-        if(runTimeMillis==null){
-            if(delayTimeMillis==null){
+        if (runTimeMillis == null) {
+            if (delayTimeMillis == null) {
                 throw new DelayQueueException("未设置延迟执行时间!");
             }
         }
-        if(topic.contains(":")){
-            throw new DelayQueueException("Topic 不能包含特殊字符 :  !");
+        if (topic.contains(":")) {
+            throw new DelayQueueException("Topic不能包含特殊字符: !");
         }
         //check topic exist
-        if(!checkTopicExist(topic)){
+        if (!checkTopicExist(topic)) {
             throw new DelayQueueException("Topic未注册!");
         }
     }
 
 
     @Override
-    public void delete(String topic, String id,RunTypeEnum runTypeEnum) {
-        if(runTypeEnum == RunTypeEnum.ASYNC){
-            executor.execute(()-> redisOperation.deleteJob(topic, id));
-        }else {
+    public void delete(String topic, String id, RunTypeEnum runTypeEnum) {
+        if (runTypeEnum == RunTypeEnum.ASYNC) {
+            executor.execute(() -> redisOperation.deleteJob(topic, id));
+        } else {
             redisOperation.deleteJob(topic, id);
         }
-        logger.info("删除延时任务:Topic:{},id：{}",topic,id);
+        logger.info("删除延时任务:Topic:{},id:{}", topic, id);
     }
 
     @Override
     public void deleteAsync(String topic, String id) {
-        delete(topic,id,RunTypeEnum.ASYNC);
+        delete(topic, id, RunTypeEnum.ASYNC);
     }
 
-    private boolean checkStringEmpty(String string){
-        return string==null||string.length()==0;
+    private boolean checkStringEmpty(String string) {
+        return string == null || string.length() == 0;
     }
 
 
-
-    public  boolean checkTopicExist(String topic){
-        for(Map.Entry<String, AbstractTopicRegister> entry: topicRegisterHolder.entrySet()) {
-            if(entry.getKey().equals(topic)){
+    private boolean checkTopicExist(String topic) {
+        for (Map.Entry<String, AbstractTopicRegister> entry : topicRegisterHolder.entrySet()) {
+            if (entry.getKey().equals(topic)) {
                 return true;
             }
         }

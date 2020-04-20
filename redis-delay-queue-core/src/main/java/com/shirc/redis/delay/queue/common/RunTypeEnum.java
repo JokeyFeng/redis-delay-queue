@@ -11,5 +11,4 @@ public enum  RunTypeEnum {
     SYNC,
     /**异步**/
     ASYNC;
-
 }

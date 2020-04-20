@@ -8,5 +8,5 @@ package com.shirc.redis.delay.queue.utils;
 public class LockUtil {
 
     /**用于synchronized加锁**/
-    public static Object lock =  new Object();
+    public static final Object lock =  new Object();
 }

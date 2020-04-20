@@ -7,7 +7,6 @@ package com.shirc.redis.delay.queue.common;
  **/
 public class DelayQueueException extends RuntimeException {
 
-
     public DelayQueueException(String message) {
         super(message);
     }

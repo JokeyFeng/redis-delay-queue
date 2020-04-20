@@ -117,7 +117,7 @@ redis的执行速度非常快,在一个Lua里面循环遍历1000个10000个根�
 ---
 ### 集群对Lua的影响
 Lua脚本的执行只能在单机器上, 集群的环境下如果想要执行Lua脚本不出错，那么Lua脚本中的所有key必须落在同一台机器;
-为了支持集群操作Lua,我们利用hashtag;   用{}把三个jey的关键词包起来;
+为了支持集群操作Lua,我们利用hashtag; 用{}把三个key的关键词包起来;
 {projectName}:Redis_Delay_Table
 {projectName}:Redis_Delay_Table
 {projectName}:RD_LIST_TOPIC

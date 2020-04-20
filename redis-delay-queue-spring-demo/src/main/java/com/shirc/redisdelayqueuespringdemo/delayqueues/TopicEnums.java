@@ -5,13 +5,13 @@ package com.shirc.redisdelayqueuespringdemo.delayqueues;
  * @Author shirenchuang
  * @Date 2019/7/31 12:23 PM
  **/
-public enum  TopicEnums  {
+public enum TopicEnums {
 
-
-    DEMO_TOPIC("DEMO_TOPIC","第一个测试TOPIC"),
-    DEMO_TOPIC_2("DEMO_TOPIC_2","第二个测试TOPIC"),
-
-    ;
+    /**
+     * 延时队列主题
+     */
+    TOPIC_1("topic_1", "第一个测试TOPIC"),
+    TOPIC_2("topic_2", "第二个测试TOPIC");
 
     public String topic;
 
@@ -29,7 +29,4 @@ public enum  TopicEnums  {
     public String getDesc() {
         return desc;
     }
-
-
-
 }

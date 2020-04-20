@@ -3,6 +3,9 @@ package com.shirc.redisdelayqueuespringdemo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author oristar
+ */
 @SpringBootApplication
 public class RedisDelayQueueSpringDemoApplication {
 

@@ -17,17 +17,17 @@ import java.util.Date;
  **/
 @Service
 public class DelayQueueCallBackDemo extends AbstractTopicRegister<MyArgs> {
+
     private static final Logger logger = LoggerFactory.getLogger(DelayQueueCallBackDemo.class);
-
-
 
     @Override
     public String getTopic() {
-        return TopicEnums.DEMO_TOPIC.getTopic();
+        return TopicEnums.TOPIC_1.getTopic();
     }
 
     /**
      * 可以重写这个方法定义 定义这个Topic的核心线程数
+     *
      * @return
      */
     @Override
@@ -37,6 +37,7 @@ public class DelayQueueCallBackDemo extends AbstractTopicRegister<MyArgs> {
 
     /**
      * 可以重写这个方法定义 定义这个Topic的最大线程数
+     *
      * @return
      */
     @Override
@@ -46,6 +47,7 @@ public class DelayQueueCallBackDemo extends AbstractTopicRegister<MyArgs> {
 
     /**
      * 可以重写这个方法定义 方法执行的超时时间
+     *
      * @return
      */
     @Override
@@ -60,12 +62,11 @@ public class DelayQueueCallBackDemo extends AbstractTopicRegister<MyArgs> {
         long now = System.currentTimeMillis();
         long delayTime = now - needRunTime;
         try {
-
             Thread.sleep(10000);
         } catch (InterruptedException e) {
 
         }
-        logger.debug("DEMO_TOPIC:成功!,当前时间:{};执行推迟了时间:{},ID:",new Date(),delayTime,s.getId());
+        logger.debug("DEMO_TOPIC:成功!,当前时间:{};执行推迟了时间:{},ID:", new Date(), delayTime, s.getId());
     }
 
     @Override

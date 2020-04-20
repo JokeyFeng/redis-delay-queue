@@ -39,5 +39,4 @@ public class ShutdownThread {
             logger.info("线程池:{},{} 打断...",executorName,executor);
         }
     }
-
 }

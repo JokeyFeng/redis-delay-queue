@@ -1,7 +1,6 @@
 package com.shirc.redisdelayqueuespringdemo.controller;
 
 import com.shirc.redis.delay.queue.common.RunTypeEnum;
-import com.shirc.redis.delay.queue.core.RedisDelayQueueContext;
 import com.shirc.redis.delay.queue.iface.RedisDelayQueue;
 import com.shirc.redisdelayqueuespringdemo.bo.MyArgs;
 import com.shirc.redisdelayqueuespringdemo.delayqueues.DelayQueueDemo2;
@@ -23,62 +22,35 @@ import java.util.UUID;
 @ResponseBody
 public class IndexController {
 
+    @Autowired
+    private RedisDelayQueue redisDelayQueue;
 
     @Autowired
-    RedisDelayQueue redisDelayQueue;
+    private DelayQueueDemo2 delayQueueDemo2;
 
-
-    @Autowired
-    RedisDelayQueueContext redisDelayQueueContext;
-
-    @Autowired
-    DelayQueueDemo2 delayQueueDemo2;
-
-
-
-    /**
-     *
-     */
     @GetMapping("/addJob")
-    public void addJob(Long rt,Integer type ){
-        if(rt ==null){
-            rt = System.currentTimeMillis()+30000;
+    public String addJob(Long rt, Integer type) {
+        if (rt == null) {
+            rt = System.currentTimeMillis() + 30000;
         }
         MyArgs myArgs = new MyArgs();
-        String id = UUID.randomUUID().toString();
+        String id = UUID.randomUUID().toString().replace("-", "");
         myArgs.setId(id);
         myArgs.setPutTime(new Date());
         myArgs.setShoudRunTime(new Date(rt));
-        myArgs.setContent("lalalalala");
-        redisDelayQueue.add(myArgs,TopicEnums.DEMO_TOPIC.getTopic(),rt,type==null?RunTypeEnum.ASYNC:RunTypeEnum.SYNC);
+        myArgs.setContent("我是测试用例");
+        redisDelayQueue.add(myArgs, TopicEnums.TOPIC_1.getTopic(), rt, type == null ? RunTypeEnum.ASYNC : RunTypeEnum.SYNC);
+        return myArgs.getId();
     }
 
     @GetMapping("/addJob2")
-    public void addJob2(Long delayTime,String userId ){
-        delayQueueDemo2.addDemo2DelayQueue(userId,delayTime);
+    public String addJob2(Long delayTime, String userId) {
+        delayQueueDemo2.addDemo2DelayQueue(userId, delayTime);
+        return userId;
     }
 
     @GetMapping("/delJob2")
-    public void delJob2(Long delayTime,String userId ){
+    public void delJob2(Long delayTime, String userId) {
         delayQueueDemo2.delDemo2Queue(userId);
     }
-
-
-
-
-
-
-
-
-
-
-
-    private Date getDate(long millis){
-        Date date = new Date();
-        date.setTime(millis);
-        return date;
-    }
-
-
-
 }

@@ -1,12 +1,7 @@
 package com.shirc.redis.delay.queue.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.*;
 import java.util.Enumeration;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @Description 网络工具类
@@ -15,8 +10,10 @@ import java.util.regex.Pattern;
  **/
 public class NetUtil {
 
-
-    // 正确的IP拿法，即优先拿site-local地址
+    /**
+     * 正确的IP拿法，即优先拿site-local地址
+     * @return
+     */
     public static String getLocalHostLANAddress()  {
         try {
             InetAddress candidateAddress = null;
@@ -26,7 +23,8 @@ public class NetUtil {
                 // 在所有的接口下再遍历IP
                 for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
                     InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
-                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
+                    // 排除loopback类型地址
+                    if (!inetAddr.isLoopbackAddress()) {
                         if (inetAddr.isSiteLocalAddress()) {
                             // 如果是site-local地址，就是它了
                             return inetAddr.getHostAddress();
@@ -50,7 +48,4 @@ public class NetUtil {
             return null;
         }
     }
-
-
-
 }

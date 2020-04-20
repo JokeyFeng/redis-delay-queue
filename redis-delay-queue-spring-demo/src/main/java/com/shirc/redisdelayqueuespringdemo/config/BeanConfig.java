@@ -4,11 +4,13 @@ import com.shirc.redis.delay.queue.core.RedisDelayQueueContext;
 import com.shirc.redis.delay.queue.iface.RedisDelayQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * @Description 接入Redis_Delay_Queue
@@ -18,14 +20,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class BeanConfig {
 
+    private RedisTemplate<Object, Object> redisTemplate;
 
+    @Autowired
+    private Environment env;
 
-    private RedisTemplate redisTemplate;
-
-
-    /**修改 redisTemplate 的key序列化方式  **/
+    /**
+     * 修改 redisTemplate 的key序列化方式
+     **/
     @Autowired(required = false)
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<Object, Object> redisTemplate) {
         RedisSerializer stringSerializer = new StringRedisSerializer();
         GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
         redisTemplate.setKeySerializer(stringSerializer);
@@ -34,20 +38,15 @@ public class BeanConfig {
         this.redisTemplate = redisTemplate;
     }
 
-
     /******* 接入 RedisDelayQueue  *******/
-
     @Bean
-    public RedisDelayQueueContext getRdctx(){
-        RedisDelayQueueContext context =  new RedisDelayQueueContext(redisTemplate,"dq_demo");
-        return context;
+    public RedisDelayQueueContext getRdctx() {
+        String name = env.getProperty("spring.application.name");
+        return new RedisDelayQueueContext(redisTemplate, StringUtils.hasText(name) ? name : "application");
     }
 
     @Bean
-    public RedisDelayQueue getRedisOperation(RedisDelayQueueContext context){
+    public RedisDelayQueue getRedisOperation(RedisDelayQueueContext context) {
         return context.getRedisDelayQueue();
     }
-
-
-
 }
