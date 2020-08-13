@@ -11,7 +11,6 @@ import com.shirc.redis.delay.queue.common.RunTypeEnum;
  **/
 public interface RedisDelayQueue {
 
-
     /**
      * 异步新增一个延迟任务
      *

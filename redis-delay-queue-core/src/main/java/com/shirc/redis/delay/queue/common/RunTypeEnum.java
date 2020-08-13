@@ -5,10 +5,14 @@ package com.shirc.redis.delay.queue.common;
  * @Author shirenchuang
  * @Date 2019/8/7 10:32 AM
  **/
-public enum  RunTypeEnum {
+public enum RunTypeEnum {
 
-    /**同步**/
+    /**
+     * 同步
+     **/
     SYNC,
-    /**异步**/
+    /**
+     * 异步
+     **/
     ASYNC;
 }

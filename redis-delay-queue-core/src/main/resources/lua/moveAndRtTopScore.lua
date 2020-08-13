@@ -10,16 +10,16 @@
 -- TIME是随机命令; 导致后面不能调用写命令;所以当前时间不在redis中获取,让用户传入
 local function getNowTime()
 
-    local a=redis.call('TIME') ;
-    return a[1]*1000+a[2]
+    local a = redis.call('TIME');
+    return a[1] * 1000 + a[2]
 end
 
 -- 从TOPIC:ID 中解析出 TOPIC
 local function getTopicInMember(str)
-    local idx =  string.find(str,':');
-    local v  = string.sub(str,1,idx-1)
+    local idx = string.find(str, ':');
+    local v = string.sub(str, 1, idx - 1)
     -- 避免有  "  字符  替换一下v
-    return string.gsub(v,'\"','');
+    return string.gsub(v, '\"', '');
 end
 
 
@@ -31,43 +31,44 @@ local bucket_key_zset = KEYS[2];
 -- 当前时间
 local nowTime = ARGV[1];
 -- 查询元素个数
-local checkNo = redis.call('ZCARD',bucket_key_zset)
+local checkNo = redis.call('ZCARD', bucket_key_zset)
 
 -- 如果没有元素的话 就直接返回了
 if (tonumber(checkNo) > 0)
 then
     -- 一次取多个
-    local member = redis.call('Zrangebyscore',bucket_key_zset,0,tonumber(nowTime));
+    local member = redis.call('Zrangebyscore', bucket_key_zset, 0, tonumber(nowTime));
     -- 如果空表直接return
     if next(member) == nil
     then
         return
     else
         -- 迭代table   member
-        for key,value in ipairs(member)
+        for key, value in ipairs(member)
         do
-            local zscore = redis.call('ZSCORE',bucket_key_zset,value);
+            local zscore = redis.call('ZSCORE', bucket_key_zset, value);
             if tonumber(nowTime) >= tonumber(zscore)
             then
                 -- 从member中解析出 TOPIC出来
-                local topic = topis_list..getTopicInMember(value);
+                local topic = topis_list .. getTopicInMember(value);
                 -- 删除  和 put
-                redis.call('ZREM',bucket_key_zset,value) ;
-                redis.call('RPUSH',topic,value);
+                redis.call('ZREM', bucket_key_zset, value);
+                redis.call('RPUSH', topic, value);
             else
                 -- 返回当前的时间戳
                 return zscore;
             end
         end
         -- 如果maxCount全部迭代完,则查询下一个元素的score返回
-        local topmember = redis.call('ZRANGE',bucket_key_zset,0,0);
+        local topmember = redis.call('ZRANGE', bucket_key_zset, 0, 0);
         local nextvalue = next(topmember);
         if nextvalue == nil
-        then return
+        then
+            return
         else
-            for k,v in ipairs(topmember)
+            for k, v in ipairs(topmember)
             do
-                return redis.call('ZSCORE',bucket_key_zset,v);
+                return redis.call('ZSCORE', bucket_key_zset, v);
             end
 
         end

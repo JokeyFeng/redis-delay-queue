@@ -29,7 +29,6 @@ public class Move2ReadyThread {
     /**
      * 搬运线程:将bucket中的延迟有序队列zSet尝试move到待消费队列List
      **/
-   // private final ExecutorService BUCKET_MOVE_TO_LIST = Executors.newSingleThreadExecutor()
     private final ExecutorService BUCKET_MOVE_TO_LIST = new ThreadPoolExecutor(
             1, 1, 60,
             TimeUnit.SECONDS, new LinkedBlockingQueue<>(),

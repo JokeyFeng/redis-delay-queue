@@ -7,6 +7,4 @@ package com.shirc.redis.delay.queue.threads;
  **/
 public class TopicConsumThread {
 
-
-
 }

@@ -9,6 +9,6 @@ local topic_id = ARGV[1];
 local content = ARGV[2];
 local score = ARGV[3];
 
-redis.call('HSET',jobs_key_ht,topic_id,content) ;
+redis.call('HSET', jobs_key_ht, topic_id, content);
 
-redis.call('ZADD',bucket_key_zset,score,topic_id) ;
+redis.call('ZADD', bucket_key_zset, score, topic_id);
